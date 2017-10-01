@@ -1,8 +1,10 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour {
 	
 	public float speed = 6f;
+	public Transform pickPivot;
 	
 	Rigidbody rb;
 	Vector3 movement;
@@ -10,12 +12,29 @@ public class PlayerMovement : MonoBehaviour {
 	Animator anim;                      // Reference to the animator component.
 	int floorMask;                      // A layer mask so that a ray can be cast just at gameobjects on the floor layer.
     float camRayLength = 100f;          // The length of the ray from the camera into the scene.
+    bool isHolding = false;
+        
+    List<GameObject> closeObj;
 	
 	void Awake(){
 		rb = GetComponent<Rigidbody>();
-		
+		anim = GetComponent<Animator>();
 		// Create a layer mask for the floor layer.
         floorMask = LayerMask.GetMask ("Floor");
+        
+        closeObj = new List<GameObject>();
+	}
+	
+	void OnTriggerEnter(Collider other){
+		if(other.CompareTag("Dice")){
+			closeObj.Add(other.gameObject);
+		}
+	}
+	
+	void OnTriggerExit(Collider other){
+		if(closeObj.Contains(other.gameObject)){
+			closeObj.Remove(other.gameObject);
+		}
 	}
 	
 	void FixedUpdate(){
@@ -31,6 +50,10 @@ public class PlayerMovement : MonoBehaviour {
 		
 		// Animate the player.
         Animating (h, v);
+        
+        Shoot();
+        
+        PickDice();
 	}
 	
 	void Move (float h, float v)
@@ -66,7 +89,7 @@ public class PlayerMovement : MonoBehaviour {
             Quaternion newRotation = Quaternion.LookRotation (playerToMouse);
 
             // Set the player's rotation to this new rotation.
-            playerRigidbody.MoveRotation (newRotation);
+            rb.MoveRotation (newRotation);
         }
     }
 	
@@ -76,6 +99,27 @@ public class PlayerMovement : MonoBehaviour {
         bool walking = h != 0f || v != 0f;
 
         // Tell the animator whether or not the player is walking.
-        anim.SetBool ("IsWalking", walking);
+        anim.SetBool ("IsRunning", walking);
     }
+    
+    void Shoot(){
+		bool isShooting = Input.GetButton("Fire1");
+		anim.SetBool ("IsShooting", isShooting);
+	}
+	
+	void PickDice(){
+		
+		if(Input.GetButtonDown("Fire2") && !isHolding){
+			closeObj[0].GetComponent<DiceScript>().ResetDice();
+			closeObj[0].GetComponent<Rigidbody>().isKinematic = true;
+			closeObj[0].transform.parent = pickPivot;
+			//closeObj[0].transform.position = Vector3.zero;
+			isHolding = true;
+		}else if(Input.GetButtonDown("Fire2") && isHolding){
+			closeObj[0].GetComponent<DiceScript>().PlayDice();
+			closeObj[0].transform.parent = null;
+			closeObj[0].GetComponent<Rigidbody>().isKinematic = false;
+			isHolding = false;
+		}
+	}
 }
