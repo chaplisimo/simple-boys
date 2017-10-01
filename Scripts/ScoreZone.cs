@@ -3,22 +3,51 @@ using System.Collections.Generic;
 
 public class ScoreZone : MonoBehaviour{
   
-  public int score;
   public DiceCard card;
-  public List<Dice> dices
+  public List<DiceScript> dices;
+  
+  void Reset(){
+   card = new DiceCard(Random.Range(2,6)); 
+   foreach(DiceScript dice in dices){
+     Destroy(dice.gameObject);
+   }
+   dices.Clear(): 
+  }
   
   void OnTriggerEnter(Collider other){
     if(other.EqualsTag("Dice')){
-      int diceNumber = other.gameObject.GetComponent<DiceScript>().number;
-      if(card.Contains(diceNumber)){
-        
+      DiceScript diceScript = other.gameObject.GetComponent<DiceScript>();
+      if(IsMissingDice(diceScript)){//card.numbers.Contains(diceNumber)){
+        dices.Add(diceScript);
+        if(RemainingNumbers().Count == 0){
+          gameController.ScorePlayer(diceScript.owner);
+          Reset();
+          
+        };
       }
     }
+  }
+  
+  bool IsMissingDice(diceScript){
+    List<int> numbersLeft = RemainingNumbers();
+    //Ahora reviso si el dado sirve o no
+    return numbersLeft.Contains(diceScript.number);
+  }
+                       
+  List<int> RemainingNumbers(){
+    List<int> numbersLeft = new List<int>(card.numbers);
+    foreach(Dice dice in dices){
+      //Primero elimino de la lista los que ya estan conseguidos
+      if(dice.owner == diceScript.owner && numbersLeft.Contains(dice.number)){
+        numbersLeft.Remove(dice.number);
+      }
+    }
+    return numbersLeft;
   }
 }
 
 public class DiceCard {
-  public int[] number;
+  public int[] numbers;
   public int score;
   
   public DiceCard(int qty){
