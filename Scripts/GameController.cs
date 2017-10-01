@@ -4,6 +4,7 @@ public class GameController : MonoBehaviour {
   
   public ScoreZone[] zones;
   public List<Player> players;
+  public int scoreToWin = 100;
   
   public Start(){
     //initialize players
@@ -17,9 +18,13 @@ public class GameController : MonoBehaviour {
   
   void UpdateScore(){
     string score = "Score Table\n";
+    string winner = "";
     foreach(Player player in players){
-      score += player.name + "\t" + player.score;
+      score += player.name + "\t" + player.score + "\n";
+      winner = player.score >= scoreToWin ? player.name : winner;
     }
+    if(!winner.Equals(""))
+      score += "Winner " + winner + "!!";
     Debug.Log(score);
   }
   
