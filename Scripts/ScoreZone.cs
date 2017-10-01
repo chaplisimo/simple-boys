@@ -15,9 +15,9 @@ public class ScoreZone : MonoBehaviour{
   }
   
   void OnTriggerEnter(Collider other){
-    if(other.EqualsTag("Dice')){
+    if(other.EqualsTag("Dice")){
       DiceScript diceScript = other.gameObject.GetComponent<DiceScript>();
-      if(IsMissingDice(diceScript)){//card.numbers.Contains(diceNumber)){
+      if(IsMissingDice(diceScript)){
         dices.Add(diceScript);
         if(RemainingNumbers().Count == 0){
           gameController.ScorePlayer(diceScript.owner);
