@@ -6,10 +6,15 @@ public class ScoreZone : MonoBehaviour{
   public DiceCard card;
   public List<DiceScript> dices;
   
+  void Start(){
+    Reset();
+  }
+  
   void Reset(){
    card = new DiceCard(Random.Range(2,6)); 
    foreach(DiceScript dice in dices){
-     Destroy(dice.gameObject);
+     dice.Die();
+     //Destroy(dice.gameObject);
    }
    dices.Clear(): 
   }
@@ -20,7 +25,7 @@ public class ScoreZone : MonoBehaviour{
       if(IsMissingDice(diceScript)){
         dices.Add(diceScript);
         if(RemainingNumbers().Count == 0){
-          gameController.ScorePlayer(diceScript.owner);
+          gameController.ScorePlayer(diceScript.owner, card.score);
           Reset();
           
         };
