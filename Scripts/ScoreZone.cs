@@ -3,45 +3,49 @@ using System.Collections.Generic;
 
 public class ScoreZone : MonoBehaviour{
   
+  [SerializeField]
   public DiceCard card;
   public List<DiceScript> dices;
   
+  GameController gameController;
+  
   void Start(){
-    Reset();
+	gameController = GameObject.FindWithTag("GameController").GetComponent<GameController>();
+    ResetZone();
   }
   
-  void Reset(){
+  void ResetZone(){
    card = new DiceCard(Random.Range(2,6)); 
    foreach(DiceScript dice in dices){
-     dice.Die();
-     //Destroy(dice.gameObject);
+     //dice.Die();
+     Destroy(dice.gameObject);
    }
-   dices.Clear(): 
+   dices.Clear();
   }
   
   void OnTriggerEnter(Collider other){
-    if(other.EqualsTag("Dice")){
+    if(other.CompareTag("Dice")){
       DiceScript diceScript = other.gameObject.GetComponent<DiceScript>();
-      if(IsMissingDice(diceScript)){
+      if(IsMissingDice(diceScript) && diceScript.isPlayed){
         dices.Add(diceScript);
-        if(RemainingNumbers().Count == 0){
+        if(RemainingNumbers(diceScript).Count == 0){
           gameController.ScorePlayer(diceScript.owner, card.score);
-          Reset();
+          ResetZone();
           
-        };
+        }
       }
     }
   }
   
-  bool IsMissingDice(diceScript){
-    List<int> numbersLeft = RemainingNumbers();
+  bool IsMissingDice(DiceScript diceScript){
+    List<int> numbersLeft = RemainingNumbers(diceScript);
     //Ahora reviso si el dado sirve o no
     return numbersLeft.Contains(diceScript.number);
   }
                        
-  List<int> RemainingNumbers(){
+  List<int> RemainingNumbers(DiceScript diceScript){
     List<int> numbersLeft = new List<int>(card.numbers);
-    foreach(Dice dice in dices){
+    foreach(DiceScript dice in dices){
       //Primero elimino de la lista los que ya estan conseguidos
       if(dice.owner == diceScript.owner && numbersLeft.Contains(dice.number)){
         numbersLeft.Remove(dice.number);
@@ -49,17 +53,20 @@ public class ScoreZone : MonoBehaviour{
     }
     return numbersLeft;
   }
-}
-
-public class DiceCard {
-  public int[] numbers;
-  public int score;
-  
-  public DiceCard(int qty){
-    number = new int[qty];
-    for(int i=0; i<qty; i++){
-      number[i] = Random.Range(1,6);
-    }
-    score = 5 * qty;
-  }
+	
+	  [System.Serializable]
+	  public class DiceCard{
+		  [SerializeField]
+		  public int[] numbers;
+		  [SerializeField]
+		  public int score;
+		  
+		  public DiceCard(int qty){
+			numbers = new int[qty];
+			for(int i=0; i<qty; i++){
+			  numbers[i] = Random.Range(1,6);
+			}
+			score = 5 * qty;
+		  }
+		}
 }

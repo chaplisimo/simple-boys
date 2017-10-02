@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour {
 	
+	public string playerName;
+	
 	public float speed = 6f;
 	public Transform pickPivot;
 	
@@ -14,7 +16,7 @@ public class PlayerMovement : MonoBehaviour {
     float camRayLength = 100f;          // The length of the ray from the camera into the scene.
     bool isHolding = false;
         
-    List<GameObject> closeObj;
+    GameObject closeObj;
 	
 	void Awake(){
 		rb = GetComponent<Rigidbody>();
@@ -22,18 +24,18 @@ public class PlayerMovement : MonoBehaviour {
 		// Create a layer mask for the floor layer.
         floorMask = LayerMask.GetMask ("Floor");
         
-        closeObj = new List<GameObject>();
+        closeObj = null;
 	}
 	
 	void OnTriggerEnter(Collider other){
 		if(other.CompareTag("Dice")){
-			closeObj.Add(other.gameObject);
+			closeObj = other.gameObject;
 		}
 	}
 	
 	void OnTriggerExit(Collider other){
-		if(closeObj.Contains(other.gameObject)){
-			closeObj.Remove(other.gameObject);
+		if(closeObj != null && closeObj.Equals(other.gameObject)){
+			closeObj = null;
 		}
 	}
 	
@@ -108,18 +110,24 @@ public class PlayerMovement : MonoBehaviour {
 	}
 	
 	void PickDice(){
-		
-		if(Input.GetButtonDown("Fire2") && !isHolding){
-			closeObj[0].GetComponent<DiceScript>().ResetDice();
-			closeObj[0].GetComponent<Rigidbody>().isKinematic = true;
-			closeObj[0].transform.parent = pickPivot;
-			//closeObj[0].transform.position = Vector3.zero;
-			isHolding = true;
-		}else if(Input.GetButtonDown("Fire2") && isHolding){
-			closeObj[0].GetComponent<DiceScript>().PlayDice();
-			closeObj[0].transform.parent = null;
-			closeObj[0].GetComponent<Rigidbody>().isKinematic = false;
-			isHolding = false;
+		if(closeObj != null){
+			DiceScript dice = closeObj.GetComponent<DiceScript>();
+			if(dice.owner.Equals("") || dice.owner.Equals(playerName)){
+				if(Input.GetButtonDown("Fire2") && !isHolding){
+					if(dice.owner.Equals("")){
+						dice.ResetDice();
+					}
+					closeObj.GetComponent<Rigidbody>().isKinematic = true;
+					closeObj.transform.parent = pickPivot;
+					//closeObj[0].transform.position = Vector3.zero;
+					isHolding = true;
+				}else if(Input.GetButtonDown("Fire2") && isHolding){
+					dice.PlayDice(playerName);
+					closeObj.transform.parent = null;
+					closeObj.GetComponent<Rigidbody>().isKinematic = false;
+					isHolding = false;
+				}
+			}
 		}
 	}
 }

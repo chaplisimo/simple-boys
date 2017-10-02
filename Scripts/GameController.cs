@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
   
@@ -6,14 +7,14 @@ public class GameController : MonoBehaviour {
   public List<Player> players;
   public int scoreToWin = 100;
   
-  public Start(){
+  public void Start(){
     //initialize players
   }
   
   public void ScorePlayer(string name, int score){
     Player player = players.Find(x => x.name == name);
     player.score += score;
-    UpdateScore():
+    UpdateScore();
   }
   
   void UpdateScore(){
@@ -28,12 +29,15 @@ public class GameController : MonoBehaviour {
     Debug.Log(score);
   }
   
+  [System.Serializable]
   public class Player {
-    public string player;
+	[SerializeField]
+    public string name;
+    [SerializeField]
     public int score;
   
     public Player(string name){
-      this.player = name;
+      this.name = name;
       this.score = 0;
     }
   }
