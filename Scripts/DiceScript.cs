@@ -9,6 +9,7 @@ public class DiceScript : MonoBehaviour {
 	public int number;
 	public string owner;
 	public GameObject canvas;
+	public GameObject[] dicesCanvasPrefab;
 	
 	Vector3 canvasOffset;
 	Quaternion canvasRotation;
@@ -39,6 +40,7 @@ public class DiceScript : MonoBehaviour {
 		isPlayed = true;
 		owner = player;
 		Debug.Log("Dice thrown: "+ number + " by "+ player);
+		UpdateCanvas();
 	}
 	
 	public void ResetDice(){
@@ -47,4 +49,39 @@ public class DiceScript : MonoBehaviour {
 		owner = "";
 		Debug.Log("Dice resetted");
 	}
+	
+	void UpdateCanvas(){
+		 switch(number){
+			 case 1 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[0],canvas.transform);
+				 diceCanvas.transform.SetParent(canvas.transform);
+				 break;
+			 }
+			 case 2 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[1],canvas.transform);
+				 diceCanvas.transform.SetParent(canvas.transform);
+				 break;
+			 }
+			 case 3 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[0],canvas.transform);
+				 diceCanvas.transform.SetParent(canvas.transform);
+				 break;
+			 }
+			 case 4 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[3],canvas.transform);
+				 diceCanvas.transform.SetParent(canvas.transform);  
+				 break;                          
+			 }                                   
+			 case 5 : {                          
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[4],canvas.transform);
+				 diceCanvas.transform.SetParent(canvas.transform);  
+				 break;                          
+			 }                                   
+			 case 6 : {                          
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[5],canvas.transform);
+				 diceCanvas.transform.SetParent(canvas.transform);
+				 break;
+			 }
+		 }
+	 }
 }

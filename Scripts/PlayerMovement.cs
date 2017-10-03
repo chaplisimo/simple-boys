@@ -114,15 +114,17 @@ public class PlayerMovement : MonoBehaviour {
 			DiceScript dice = closeObj.GetComponent<DiceScript>();
 			if(dice.owner.Equals("") || dice.owner.Equals(playerName)){
 				if(Input.GetButtonDown("Fire2") && !isHolding){
-					if(dice.owner.Equals("")){
+					/*if(!dice.isPlayed){
 						dice.ResetDice();
-					}
+					}*/
 					closeObj.GetComponent<Rigidbody>().isKinematic = true;
 					closeObj.transform.parent = pickPivot;
 					//closeObj[0].transform.position = Vector3.zero;
 					isHolding = true;
 				}else if(Input.GetButtonDown("Fire2") && isHolding){
-					dice.PlayDice(playerName);
+					//if(!dice.isPlayed){
+						dice.PlayDice(playerName);
+					//}
 					closeObj.transform.parent = null;
 					closeObj.GetComponent<Rigidbody>().isKinematic = false;
 					isHolding = false;

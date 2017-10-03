@@ -7,6 +7,9 @@ public class ScoreZone : MonoBehaviour{
   public DiceCard card;
   public List<DiceScript> dices;
   
+  public GameObject[] dicesUI;
+  public GameObject[] dicesCanvasPrefab;
+  
   GameController gameController;
   
   void Start(){
@@ -16,6 +19,7 @@ public class ScoreZone : MonoBehaviour{
   
   void ResetZone(){
    card = new DiceCard(Random.Range(2,6)); 
+   UpdateCanvas();
    foreach(DiceScript dice in dices){
      //dice.Die();
      Destroy(dice.gameObject);
@@ -52,6 +56,44 @@ public class ScoreZone : MonoBehaviour{
       }
     }
     return numbersLeft;
+  }
+  
+  void UpdateCanvas(){
+	  for(int i=0;i<card.numbers.Length;i++){
+		  int number = card.numbers[i];
+		 switch(number){
+			 case 1 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[0],dicesUI[i].transform);
+				 diceCanvas.transform.SetParent(dicesUI[i].transform);
+				 break;
+			 }
+			 case 2 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[1],dicesUI[i].transform);
+				 diceCanvas.transform.SetParent(dicesUI[i].transform);
+				 break;
+			 }
+			 case 3 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[0],dicesUI[i].transform);
+				 diceCanvas.transform.SetParent(dicesUI[i].transform);
+				 break;
+			 }
+			 case 4 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[3],dicesUI[i].transform);
+				 diceCanvas.transform.SetParent(dicesUI[i].transform);
+				 break;
+			 }
+			 case 5 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[4],dicesUI[i].transform);
+				 diceCanvas.transform.SetParent(dicesUI[i].transform);
+				 break;
+			 }
+			 case 6 : {
+				 GameObject diceCanvas = Instantiate(dicesCanvasPrefab[5],dicesUI[i].transform);
+				 diceCanvas.transform.SetParent(dicesUI[i].transform);
+				 break;
+			 }
+		 }
+	  }
   }
 	
 	  [System.Serializable]
