@@ -11,6 +11,8 @@ public class DiceScript : MonoBehaviour {
 	public GameObject canvas;
 	public GameObject[] dicesCanvasPrefab;
 	
+	public DiceSheet diceSheet;
+	
 	Vector3 canvasOffset;
 	Quaternion canvasRotation;
 	GameObject mainCamera;
