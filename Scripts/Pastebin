@@ -1,0 +1,78 @@
+using UnityEngine;
+
+public class PlayerPicking : MonoBehaviour {
+	
+	public GameObject 
+	public bool canPick = true;
+	
+	
+	void OnTriggerEnter(Collider other){
+		if(other.CompareTag("Pickable")){
+			
+		}
+	}
+	
+	void Update(){
+		if(Input.GetButton("Fire2")){
+			
+		}
+	}
+}
+
+public class ItemPicking : MonoBehaviour {
+	
+	delegate void 
+	
+	void OnTriggerEnter(Collider other){
+		if(other.CompareTag("Player")){
+			PlayerPicking pickScript = other.GetComponent<PlayerPicking>();
+			if(pickScript.canPick){
+				//pickScript........
+			}
+		}
+	}
+}
+
+
+
+	
+	void OnTriggerEnter(Collider other){
+		if(other.CompareTag("Dice")){
+			closeObj = other.gameObject;
+		}
+	}
+	
+	void OnTriggerExit(Collider other){
+		if(closeObj != null && closeObj.Equals(other.gameObject)){
+			closeObj = null;
+		}
+	}    
+    void Shoot(){
+		bool isShooting = Input.GetButton("Fire1");
+		anim.SetBool ("IsShooting", isShooting);
+	}
+	
+	void PickDice(){
+		if(closeObj != null){
+			DiceScript dice = closeObj.GetComponent<DiceScript>();
+			if(dice.owner.Equals("") || dice.owner.Equals(playerName)){
+				if(Input.GetButtonDown("Fire2") && !isHolding){
+					/*if(!dice.isPlayed){
+						dice.ResetDice();
+					}*/
+					closeObj.GetComponent<Rigidbody>().isKinematic = true;
+					closeObj.transform.parent = pickPivot;
+					//closeObj[0].transform.position = Vector3.zero;
+					isHolding = true;
+				}else if(Input.GetButtonDown("Fire2") && isHolding){
+					//if(!dice.isPlayed){
+						dice.PlayDice(playerName);
+					//}
+					closeObj.transform.parent = null;
+					closeObj.GetComponent<Rigidbody>().isKinematic = false;
+					isHolding = false;
+				}
+			}
+		}
+	}
+}
